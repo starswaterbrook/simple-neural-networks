@@ -13,8 +13,8 @@ This project aims to deliver a simple implementation of various neural network t
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/mlp-xor.git
-    cd mlp-xor
+    git clone https://github.com/starswaterbrook/simple-neural-networks.git
+    cd simple-neural-networks
     ```
 
 2. Create a virtual environment and activate it:
