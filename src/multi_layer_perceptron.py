@@ -1,8 +1,8 @@
+import os
+import pickle
 from typing import Callable, Optional
 
 import numpy as np
-import pickle 
-import os
 
 from src.common.loss_functions import mean_squared_error
 from src.common.neuron_layer import Layer
@@ -56,7 +56,7 @@ class MultiLayerPerceptron:
 
         a = self._layers[-1].activation_function(a)
         return a
-    
+
     def save_model(self, filename: str):
         model_data = {
             "layers": [
@@ -64,16 +64,17 @@ class MultiLayerPerceptron:
                     "neuron_count": layer.neuron_count,
                     "weights": layer.get_weights(),
                     "bias": layer._bias,
-                    "activation_fn": layer.activation_function
-                } for layer in self._layers
+                    "activation_fn": layer.activation_function,
+                }
+                for layer in self._layers
             ]
         }
-        os.makedirs('models', exist_ok=True)
-        with open(f"models/{filename}.model", 'wb') as f:
+        os.makedirs("models", exist_ok=True)
+        with open(f"models/{filename}.model", "wb") as f:
             pickle.dump(model_data, f)
 
     def load_model(self, filename: str):
-        with open(f"models/{filename}", 'rb') as f:
+        with open(f"models/{filename}", "rb") as f:
             model_data = pickle.load(f)
         self._layers = []
         for i, layer_data in enumerate(model_data["layers"]):
