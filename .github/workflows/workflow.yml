@@ -1,0 +1,41 @@
+name: Run tests and check styling
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+      - '**'
+
+jobs:
+  check-repo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Check requirements
+        run: |
+          bash env_scripts/check_requirements.sh
+
+      - name: Check code formatting with ruff
+        run: |
+          tox -e check-styling
+
+      - name: Run tests
+        run: |
+          tox -e run-tests
+      
+
