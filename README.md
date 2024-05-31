@@ -30,8 +30,7 @@ This project aims to deliver a simple implementation of various neural network t
 
 ## Usage
 
-Usage is rather straightforward and showcased in [`mlp_train.py`](mlp_train.py) and [`mlp_load.py`](mlp_load.py)
-
+Usage is rather straightforward and showcased in [`example_usage`](example_usage)
 ## Tests and Styling
 
 This projects uses [`tox`](https://github.com/tox-dev/tox), please check [`tox.ini`](tox.ini) for available commands.  
