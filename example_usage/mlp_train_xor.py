@@ -16,7 +16,7 @@ mlp.add_layer(1, sigmoid)
 inputs = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 targets = np.array([[0], [1], [1], [0]])
 
-mlp.train(inputs, targets, epochs=10000, learning_rate=0.01)
+mlp.train(inputs, targets, epochs=150, learning_rate=0.03)
 
 # Test the model
 for i, o in zip(inputs, targets):

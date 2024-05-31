@@ -10,7 +10,7 @@ on:
       - '**'
 
 jobs:
-  check-repo:
+  run-checks:
     runs-on: ubuntu-latest
 
     steps:

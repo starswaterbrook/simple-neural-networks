@@ -61,3 +61,6 @@ when adding a new dependency. Then, to make sure it has been generated correctly
 ./env_scripts/check_requirements.sh
 ```
 When making a pull request, please try to adhere to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) specification.
+
+## License
+This project is under [MIT License](https://opensource.org/license/mit)
