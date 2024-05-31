@@ -44,63 +44,49 @@ class MultiLayerPerceptron:
     def feed_forward(self, vector: np.ndarray) -> np.ndarray:
         a = vector.copy()
 
-        for i in range(0, len(self._layers) - 1):
+        for i in range(len(self._layers)-1):
             layer = self._layers[i]
+
             next_layer = self._layers[i + 1]
-
-            activation_fn = layer.activation_function
-            weights = layer.get_weights()
             bias = next_layer._bias
+            activation_fn = next_layer.activation_function
 
-            a = activation_fn(np.dot(weights, a)) + bias
+            weights = layer.get_weights()
+            a = activation_fn(np.dot(weights, a) + bias)
 
-        a = self._layers[-1].activation_function(a)
         return a
 
     def save_model(self, filename: str):
-        model_data = {
-            "layers": [
-                {
-                    "neuron_count": layer.neuron_count,
-                    "weights": layer.get_weights(),
-                    "bias": layer._bias,
-                    "activation_fn": layer.activation_function,
-                }
-                for layer in self._layers
-            ]
-        }
         os.makedirs("models", exist_ok=True)
         with open(f"models/{filename}.model", "wb") as f:
-            pickle.dump(model_data, f)
+            pickle.dump(self, f)
 
-    def load_model(self, filename: str):
+    @classmethod
+    def load_model(cls, filename: str):
         with open(f"models/{filename}", "rb") as f:
-            model_data = pickle.load(f)
-        self._layers = []
-        for i, layer_data in enumerate(model_data["layers"]):
-            self.add_layer(layer_data["neuron_count"], layer_data["activation_fn"])
-            self._layers[i]._weights = layer_data["weights"]
-            self._layers[i]._bias = layer_data["bias"]
+            model = pickle.load(f)
+        if isinstance(model, cls):
+            return model
+        raise TypeError(f"Loaded model is not of type {cls}")
 
-    def _get_activations(self, vector: np.ndarray) -> list[np.ndarray]:
+    def _get_activations(self, vector: np.ndarray) -> tuple[list[np.ndarray], list[np.ndarray]]:
         activations = [vector]
+        pre_activations = [vector]
 
         a = vector.copy()
-        for i in range(len(self._layers) - 1):
+        for i in range(len(self._layers)-1):
             layer = self._layers[i]
             next_layer = self._layers[i + 1]
 
-            activation_fn = layer.activation_function
-            weights = layer.get_weights()
             bias = next_layer._bias
+            activation_fn = next_layer.activation_function
+            weights = layer.get_weights()
+            
+            a = np.dot(weights, a) + bias
+            activations.append(activation_fn(a))
+            pre_activations.append(a)
 
-            a = activation_fn(np.dot(weights, a)) + bias
-            activations.append(a)
-
-        a = self._layers[-1].activation_function(a)
-        activations.append(a)
-
-        return activations
+        return activations, pre_activations
 
     def _restructure_layers(self):
         layer_neuron_counts = [layer.neuron_count for layer in self._layers]
@@ -120,9 +106,9 @@ class MultiLayerPerceptron:
         for epoch in range(epochs):
             total_loss = 0
             for x, y in zip(inputs, targets):
-                activations = self._get_activations(x)
+                activations, _ = self._get_activations(x)
+                predictions = self.feed_forward(x)
 
-                predictions = activations[-1]
                 loss = mean_squared_error(predictions, y)
                 total_loss += loss
                 loss_derivative = mean_squared_error(predictions, y, deriv=True)
@@ -136,10 +122,9 @@ class MultiLayerPerceptron:
                     current_layer = self._layers[i]
                     current_layer._bias -= learning_rate * delta
                     next_layer._weights -= learning_rate * np.outer(delta, prev_activation)
-                    if i > 1:
-                        delta = np.dot(next_layer.get_weights().T, delta) * self._layers[
-                            i - 1
-                        ].activation_function(activations[i - 1], deriv=True)
+                    delta = np.dot(next_layer.get_weights().T, delta) * self._layers[
+                        i - 1
+                    ].activation_function(activations[i - 1], deriv=True)
             print(f"Epoch {epoch + 1}/{epochs}, Loss: {total_loss / len(inputs)}")
 
     @property
