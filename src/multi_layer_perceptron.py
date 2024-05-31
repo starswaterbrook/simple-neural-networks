@@ -44,7 +44,7 @@ class MultiLayerPerceptron:
     def feed_forward(self, vector: np.ndarray) -> np.ndarray:
         a = vector.copy()
 
-        for i in range(len(self._layers)-1):
+        for i in range(len(self._layers) - 1):
             layer = self._layers[i]
 
             next_layer = self._layers[i + 1]
@@ -74,14 +74,14 @@ class MultiLayerPerceptron:
         pre_activations = [vector]
 
         a = vector.copy()
-        for i in range(len(self._layers)-1):
+        for i in range(len(self._layers) - 1):
             layer = self._layers[i]
             next_layer = self._layers[i + 1]
 
             bias = next_layer._bias
             activation_fn = next_layer.activation_function
             weights = layer.get_weights()
-            
+
             a = np.dot(weights, a) + bias
             activations.append(activation_fn(a))
             pre_activations.append(a)

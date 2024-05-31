@@ -4,21 +4,27 @@ from src.multi_layer_perceptron import MultiLayerPerceptron
 
 mlp = MultiLayerPerceptron.load_model("digit_recognizer.model")
 
+
 def load_csv_to_numpy_list(filename):
-    data = np.loadtxt(filename, delimiter=',', skiprows=1)
+    data = np.loadtxt(filename, delimiter=",", skiprows=1)
 
     designated_values = data[:, 0]
     array_values = data[:, 1:]
 
-    result = [(designated_value, array_value) for designated_value, array_value in zip(designated_values, array_values)]
+    result = [
+        (designated_value, array_value)
+        for designated_value, array_value in zip(designated_values, array_values)
+    ]
 
     return result
 
-filename = 'example_usage/train.csv'
+
+filename = "example_usage/train.csv"
 numpy_list = load_csv_to_numpy_list(filename)
 
 inputs = []
 outputs = []
+
 
 def normalize_array(arr):
     arr = arr.astype(np.float32)
@@ -26,6 +32,7 @@ def normalize_array(arr):
     normalized_arr = arr / 255.0
 
     return normalized_arr
+
 
 for item in numpy_list:
     inputs.append(normalize_array(item[1]))
